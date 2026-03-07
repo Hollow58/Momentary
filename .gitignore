@@ -1,0 +1,16 @@
+# Secrets and local config
+spotify/config.local.php
+.env
+.env.*
+
+# Runtime OAuth token storage
+spotify/tokens/tokens_*.json
+
+# Node / Expo artifacts
+spotify/mobile/node_modules/
+spotify/mobile/.expo/
+spotify/mobile/.expo-shared/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db

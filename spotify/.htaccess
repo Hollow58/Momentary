@@ -1,0 +1,9 @@
+Options -Indexes
+DirectoryIndex index.html index.php
+
+# Protect individual token files
+<IfModule mod_authz_core.c>
+    <FilesMatch "^tokens_.*\.json$">
+        Require all denied
+    </FilesMatch>
+</IfModule>

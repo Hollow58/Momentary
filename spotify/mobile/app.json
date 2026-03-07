@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "Spotify Now Playing",
+    "slug": "spotify-now-playing",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "platforms": ["ios", "android"],
+    "icon": "./assets/icon.png",
+    "splash": {
+      "backgroundColor": "#111111"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#111111"
+      }
+    }
+  }
+}
