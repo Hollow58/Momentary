@@ -1,40 +1,40 @@
 import 'package:flutter/material.dart';
-import 'feed_screen.dart';
- 
+import 'app_shell.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
- 
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
- 
+
 class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   String foutmelding = '';
- 
+
   // Nep accounts om te testen
   final Map<String, String> nepAccounts = {
     'test@test.com': '1234',
     'faye@test.com': 'welkom',
     'sude@test.com': 'welkom',
   };
- 
+
   void login() {
     final email = emailController.text.trim();
     final wachtwoord = passwordController.text;
- 
+
     if (email.isEmpty || wachtwoord.isEmpty) {
       setState(() {
         foutmelding = 'Vul je email en wachtwoord in.';
       });
       return;
     }
- 
+
     if (nepAccounts[email] == wachtwoord) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const FeedScreen()),
+        MaterialPageRoute(builder: (context) => const AppShell()),
       );
     } else {
       setState(() {
@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
       });
     }
   }
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,7 +53,6 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
- 
               const Text(
                 'Welcome to',
                 style: TextStyle(fontSize: 20, color: Colors.black54),
@@ -62,9 +61,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 'Momentary',
                 style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
               ),
- 
+
               const SizedBox(height: 48),
- 
+
               TextField(
                 controller: emailController,
                 decoration: const InputDecoration(
@@ -74,9 +73,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   fillColor: Colors.white,
                 ),
               ),
- 
+
               const SizedBox(height: 16),
- 
+
               TextField(
                 controller: passwordController,
                 obscureText: true,
@@ -87,17 +86,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   fillColor: Colors.white,
                 ),
               ),
- 
+
               const SizedBox(height: 12),
- 
+
               if (foutmelding.isNotEmpty)
                 Text(
                   foutmelding,
                   style: const TextStyle(color: Colors.red, fontSize: 14),
                 ),
- 
+
               const SizedBox(height: 20),
- 
+
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -112,9 +111,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
- 
+
               const SizedBox(height: 12),
- 
+
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
@@ -124,13 +123,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text(
-                    'Register',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  child: const Text('Register', style: TextStyle(fontSize: 16)),
                 ),
               ),
- 
             ],
           ),
         ),
