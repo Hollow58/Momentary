@@ -1,0 +1,86 @@
+import { StyleSheet } from 'react-native';
+
+export const styles = StyleSheet.create({
+  flex: { flex: 1 },
+  container: {
+    flexGrow: 1,
+    paddingHorizontal: 28,
+    paddingTop: 60,
+    paddingBottom: 40,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 28,
+  },
+  cancelText: {
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 17,
+    color: '#888',
+  },
+  headerTitle: {
+    fontFamily: 'GildaDisplay_400Regular',
+    fontSize: 20,
+    color: '#444',
+  },
+  postBtnText: {
+    fontFamily: 'Nunito_600SemiBold',
+    fontSize: 17,
+    color: '#444',
+  },
+  captionInput: {
+    fontFamily: 'Nunito_400Regular',
+    backgroundColor: '#faf4ee',
+    borderRadius: 20,
+    padding: 20,
+    fontSize: 17,
+    color: '#444',
+    minHeight: 120,
+    textAlignVertical: 'top',
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.06,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  imagePreviewContainer: {
+    position: 'relative',
+    borderRadius: 20,
+    overflow: 'hidden',
+    marginBottom: 20,
+  },
+  imagePreview: {
+    width: '100%',
+    height: 250,
+    borderRadius: 20,
+  },
+  removeImage: {
+    position: 'absolute',
+    top: 12,
+    right: 12,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  removeImageText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  addImageBtn: {
+    backgroundColor: '#EFDEC2',
+    borderRadius: 16,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  addImageText: {
+    fontFamily: 'Nunito_600SemiBold',
+    fontSize: 16,
+    color: '#444',
+  },
+});
