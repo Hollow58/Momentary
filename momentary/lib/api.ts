@@ -1,8 +1,8 @@
 import { Platform } from 'react-native';
 
 // Backend URL
-const API_BASE = 'https://102722.stu.sd-lab.nl/momentary/backend';
-const PC_IP = '102722.stu.sd-lab.nl';
+const API_BASE = process.env.EXPO_PUBLIC_API_BASE;
+const PC_IP = process.env.EXPO_PUBLIC_PC_IP;
 
 // User
 export interface User {
@@ -136,7 +136,7 @@ export async function getAllUsers(): Promise<User[]> {
 }
 
 // Upload an image and return the server URL
-async function uploadImage(localUri: string): Promise<string> {
+export async function uploadImage(localUri: string): Promise<string> {
   const filename = localUri.split('/').pop() || 'photo.jpg';
   const match = /\.(\w+)$/.exec(filename);
   const ext = match ? match[1].toLowerCase() : 'jpeg';
