@@ -62,3 +62,4 @@ export function formatTimeLabel(dateValue?: string | null) {
   const days = Math.floor(hours / 24);
   return `${days}d`;
 }
+

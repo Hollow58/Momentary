@@ -35,3 +35,4 @@ export function relationshipLabel(state: RelationshipState) {
 export function relationshipPillStyle(state: RelationshipState) {
   return { backgroundColor: RELATIONSHIP[state].backgroundColor };
 }
+

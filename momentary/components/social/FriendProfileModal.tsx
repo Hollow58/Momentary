@@ -4,6 +4,8 @@ import { Modal, Pressable, Text, TouchableOpacity, View } from 'react-native';
 import { type FriendRequestView, type RelationshipState, type User } from '@/lib/api';
 
 import { RelationshipBadge } from './RelationshipBadge';
+// Spotify Widget
+import { SpotifyPlayer } from './SpotifyPlayer';
 import { UserAvatar } from './UserAvatar';
 import { styles } from '@/styles/components/FriendProfileModal';
 
@@ -64,6 +66,9 @@ export function FriendProfileModal({
             <View style={styles.body}>
               <RelationshipBadge state={relationship} />
             </View>
+
+            {/* Spotify widget */}
+            <SpotifyPlayer userId={selectedUser.id} />
 
             {/* Action buttons */}
             <View style={styles.actions}>
@@ -163,3 +168,4 @@ function renderPrimaryAction({
     </TouchableOpacity>
   );
 }
+

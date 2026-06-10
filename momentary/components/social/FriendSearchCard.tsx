@@ -59,3 +59,4 @@ export function FriendSearchCard({
     </View>
   );
 }
+

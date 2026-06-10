@@ -1,0 +1,12 @@
+{
+  "name": "momentary",
+  "short_name": "momentary",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "description": "momentary",
+  "orientation": "portrait-primary",
+  "prefer_related_applications": false,
+  "icons": []
+}

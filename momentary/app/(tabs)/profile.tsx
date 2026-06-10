@@ -1,15 +1,17 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { UserAvatar } from '@/components/social/UserAvatar';
+import { SpotifyPlayer } from '@/components/social/SpotifyPlayer';
 import { resolveImageUrl } from '@/lib/api';
 import { LinearGradient } from 'expo-linear-gradient';
 // Pick image from gallery
 import * as ImagePicker from 'expo-image-picker';
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
   Image,
   KeyboardAvoidingView,
+  Linking,
   Platform,
   ScrollView,
   Text,
@@ -19,6 +21,9 @@ import {
 } from 'react-native';
 import { styles } from '@/styles/tabs/profile';
 import { GRADIENT_COLORS, GRADIENT_LOCATIONS } from '@/styles/global';
+
+// Spotify base URL
+const SPOTIFY_BASE = 'https://102722.stu.sd-lab.nl/spotify';
 
 // Profile screen
 export default function ProfileScreen() {
@@ -32,6 +37,40 @@ export default function ProfileScreen() {
   const [email, setEmail] = useState(user?.email ?? '');
   // Saving in progress
   const [saving, setSaving] = useState(false);
+  // Spotify connected (null = checking)
+  const [spotifyConnected, setSpotifyConnected] = useState<boolean | null>(null);
+
+  // Check Spotify status
+  const checkSpotifyStatus = useCallback(async () => {
+    if (!user?.id) return;
+    try {
+      const res = await fetch(`${SPOTIFY_BASE}/api.php?action=status&user_id=${user.id}`);
+      const data = await res.json();
+      setSpotifyConnected(data.authenticated === true);
+    } catch {
+      setSpotifyConnected(false);
+    }
+  }, [user?.id]);
+
+  // Check on load
+  useEffect(() => {
+    checkSpotifyStatus();
+  }, [checkSpotifyStatus]);
+
+  // Connect Spotify
+  const handleConnectSpotify = () => {
+    if (!user?.id) return;
+    Linking.openURL(`${SPOTIFY_BASE}/login.php?user_id=${user.id}`);
+  };
+
+  // Disconnect Spotify
+  const handleDisconnectSpotify = async () => {
+    if (!user?.id) return;
+    try {
+      await fetch(`${SPOTIFY_BASE}/api.php?action=logout&user_id=${user.id}`);
+      setSpotifyConnected(false);
+    } catch {}
+  };
 
   // Start editing
   const startEditing = () => {
@@ -182,6 +221,18 @@ export default function ProfileScreen() {
                   autoCapitalize="none"
                 />
 
+                {/* Spotify button */}
+                <Text style={styles.fieldLabel}>Spotify</Text>
+                {spotifyConnected ? (
+                  <TouchableOpacity style={styles.spotifyDisconnectButton} onPress={handleDisconnectSpotify} activeOpacity={0.8}>
+                    <Text style={styles.spotifyDisconnectText}>Disconnect Spotify</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity style={styles.spotifyConnectButton} onPress={handleConnectSpotify} activeOpacity={0.8}>
+                    <Text style={styles.spotifyConnectText}>Connect Spotify</Text>
+                  </TouchableOpacity>
+                )}
+
                 {/* Cancel and Save */}
                 <View style={styles.editActions}>
                   <TouchableOpacity style={styles.cancelButton} onPress={cancelEditing} activeOpacity={0.8}>
@@ -217,6 +268,9 @@ export default function ProfileScreen() {
             </View>
           )}
 
+          {/* Spotify now playing */}
+          {user?.id ? <SpotifyPlayer userId={user.id} /> : null}
+
           {/* Sign out */}
           <TouchableOpacity style={styles.logoutButton} onPress={logout} activeOpacity={0.8}>
             <Text style={styles.logoutText}>Sign Out</Text>
@@ -226,3 +280,5 @@ export default function ProfileScreen() {
     </KeyboardAvoidingView>
   );
 }
+
+

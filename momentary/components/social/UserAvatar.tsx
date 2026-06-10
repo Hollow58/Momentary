@@ -33,3 +33,4 @@ export function UserAvatar({ user, size, style, letterStyle }: UserAvatarProps) 
     </View>
   );
 }
+

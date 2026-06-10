@@ -308,3 +308,6 @@ export default function FriendsScreen() {
     </LinearGradient>
   );
 }
+
+
+

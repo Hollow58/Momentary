@@ -159,4 +159,30 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     color: '#B04A3A',
   },
+  spotifyConnectButton: {
+    backgroundColor: '#1DB954',
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    alignSelf: 'flex-start',
+    marginTop: 4,
+  },
+  spotifyConnectText: {
+    fontFamily: 'Nunito_600SemiBold',
+    color: '#fff',
+    fontSize: 14,
+  },
+  spotifyDisconnectButton: {
+    backgroundColor: 'rgba(64, 49, 43, 0.08)',
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    alignSelf: 'flex-start',
+    marginTop: 4,
+  },
+  spotifyDisconnectText: {
+    fontFamily: 'Nunito_600SemiBold',
+    color: '#B04A3A',
+    fontSize: 14,
+  },
 });
