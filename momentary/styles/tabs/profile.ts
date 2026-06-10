@@ -1,0 +1,162 @@
+import { StyleSheet } from 'react-native';
+import * as g from '@/styles/global';
+
+export const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 28,
+    paddingTop: 72,
+    paddingBottom: 120,
+  },
+  title: {
+    ...g.pageTitle,
+    paddingBottom: 28,
+  },
+  card: {
+    backgroundColor: 'rgba(250, 244, 238, 0.82)',
+    borderRadius: 30,
+    padding: 28,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: 'rgba(64, 49, 43, 0.08)',
+  },
+  avatarCircle: {
+    marginBottom: 6,
+  },
+  avatarImage: {
+    width: 90,
+    height: 90,
+    borderRadius: 45,
+    marginBottom: 6,
+    backgroundColor: '#EFDEC2',
+  },
+  avatarLetter: {
+    fontFamily: 'Nunito_600SemiBold',
+    fontSize: 36,
+    color: '#444',
+  },
+  avatarBadge: {
+    position: 'absolute',
+    bottom: 4,
+    right: -4,
+    backgroundColor: '#40312B',
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+  },
+  avatarBadgeText: {
+    fontFamily: 'Nunito_600SemiBold',
+    fontSize: 11,
+    color: '#fff',
+  },
+  name: {
+    fontFamily: 'Nunito_600SemiBold',
+    fontSize: 24,
+    color: '#444',
+    marginTop: 10,
+    marginBottom: 4,
+  },
+  username: {
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 16,
+    color: '#888',
+    marginBottom: 4,
+  },
+  email: {
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 14,
+    color: '#888',
+    marginBottom: 16,
+  },
+  editButton: {
+    backgroundColor: 'rgba(64, 49, 43, 0.08)',
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 28,
+  },
+  editButtonText: {
+    fontFamily: 'Nunito_600SemiBold',
+    color: '#444',
+    fontSize: 15,
+  },
+  fieldLabel: {
+    ...g.sectionLabel,
+    alignSelf: 'flex-start',
+    marginTop: 14,
+    marginBottom: 6,
+  },
+  input: {
+    ...g.tabInput,
+    width: '100%',
+    fontSize: 15,
+  },
+  editActions: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 18,
+  },
+  cancelButton: {
+    backgroundColor: 'rgba(64, 49, 43, 0.08)',
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+  },
+  cancelButtonText: {
+    fontFamily: 'Nunito_600SemiBold',
+    color: '#444',
+    fontSize: 15,
+  },
+  saveButton: {
+    backgroundColor: '#40312B',
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 28,
+    minWidth: 80,
+    alignItems: 'center',
+  },
+  saveButtonText: {
+    fontFamily: 'Nunito_600SemiBold',
+    color: '#fff',
+    fontSize: 15,
+  },
+  savingOverlay: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    marginTop: 16,
+  },
+  savingText: {
+    fontFamily: 'Nunito_400Regular',
+    color: '#888',
+    fontSize: 14,
+  },
+  logoutButton: {
+    backgroundColor: '#40312B',
+    borderRadius: 16,
+    paddingVertical: 16,
+    alignItems: 'center',
+    marginTop: 28,
+  },
+  logoutText: {
+    fontFamily: 'Nunito_600SemiBold',
+    color: '#fff',
+    fontSize: 17,
+  },
+  removeAvatarBtn: {
+    marginTop: 4,
+    marginBottom: 6,
+  },
+  removeAvatarText: {
+    fontFamily: 'Nunito_600SemiBold',
+    fontSize: 13,
+    color: '#B04A3A',
+  },
+});
