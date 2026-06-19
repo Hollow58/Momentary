@@ -3,6 +3,7 @@ import {
   getChatThreads,
   getConversation,
   sendMessage,
+  uploadImage,
   type ChatThread,
   type Message,
   type User,
@@ -104,6 +105,15 @@ export default function ChatsScreen() {
     await refreshThreads();
   };
 
+  // Upload image and send as a message
+  const handleSendImage = async (localUri: string) => {
+    if (!user || !activeFriend) return;
+    const url = await uploadImage(localUri);
+    await sendMessage(user.id, activeFriend.id, `[img]${url}`);
+    await refreshConversation(activeFriend.id);
+    await refreshThreads();
+  };
+
   // Not logged in
   if (!user) {
     return (
@@ -126,13 +136,6 @@ export default function ChatsScreen() {
     >
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
         <Text style={styles.title}>Chats</Text>
-        <Text style={styles.subtitle}>Accepted friends appear here automatically.</Text>
-
-        {/* Active chats count */}
-        <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Active chats</Text>
-          <Text style={styles.sectionCount}>{threads.length}</Text>
-        </View>
 
         {/* Chat threads or empty message */}
         {threads.length > 0 ? (
@@ -157,6 +160,7 @@ export default function ChatsScreen() {
         draft={draft}
         onDraftChange={setDraft}
         onSend={handleSend}
+        onSendImage={handleSendImage}
         onClose={closeThread}
       />
     </LinearGradient>

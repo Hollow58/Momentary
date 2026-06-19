@@ -1,19 +1,14 @@
 import { StyleSheet } from 'react-native';
+import * as g from '@/styles/global';
 
 export const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(250, 244, 238, 0.92)',
-    borderRadius: 26,
+    backgroundColor: g.SURFACE_BASE,
+    borderRadius: g.CARD_RADIUS,
     padding: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(64, 49, 43, 0.06)',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 4,
+    ...g.cardShadow,
   },
   avatar: {
     marginRight: 14,
@@ -33,7 +28,7 @@ export const styles = StyleSheet.create({
   name: {
     fontFamily: 'Nunito_700Bold',
     fontSize: 17,
-    color: '#33261F',
+    color: g.TEXT_PRIMARY,
     flex: 1,
   },
   time: {
@@ -43,7 +38,7 @@ export const styles = StyleSheet.create({
   },
   preview: {
     fontFamily: 'Nunito_400Regular',
-    color: '#7C6C5B',
+    color: g.TEXT_SECONDARY,
     marginTop: 5,
   },
   nameUnread: {
@@ -52,7 +47,7 @@ export const styles = StyleSheet.create({
   },
   timeUnread: {
     fontFamily: 'Nunito_700Bold',
-    color: '#40312B',
+    color: g.PRIMARY_ACTION,
   },
   previewUnread: {
     fontFamily: 'Nunito_800ExtraBold',

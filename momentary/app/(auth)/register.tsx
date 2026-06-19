@@ -84,7 +84,7 @@ export default function RegisterScreen() {
             placeholderTextColor="#999"
             autoCapitalize="none"
             value={username}
-            onChangeText={setUsername}
+            onChangeText={(v) => setUsername(v.toLowerCase())}
           />
           <TextInput
             style={styles.input}

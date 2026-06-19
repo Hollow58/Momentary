@@ -36,11 +36,11 @@ export const styles = StyleSheet.create({
   },
   userName: {
     fontFamily: 'Nunito_400Regular',
-    fontSize: 22,
+    fontSize: 19,
     color: '#000',
   },
   userNameLarge: {
-    fontSize: 26,
+    fontSize: 23,
   },
   timestamp: {
     fontFamily: 'Nunito_400Regular',

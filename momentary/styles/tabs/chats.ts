@@ -14,22 +14,9 @@ export const styles = StyleSheet.create({
     ...g.pageTitle,
     marginBottom: 8,
   },
-  subtitle: {
-    fontFamily: 'Nunito_400Regular',
-    fontSize: 16,
-    color: '#888',
-    marginBottom: 18,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 12,
-  },
-  sectionTitle: g.sectionTitle,
-  sectionCount: g.sectionCount,
   threadStack: {
     gap: 12,
+    marginHorizontal: -12,
   },
   emptyCard: {
     backgroundColor: 'rgba(250, 244, 238, 0.82)',

@@ -21,7 +21,10 @@ export function ChatThreadCard({ thread, currentUserId, onPress }: ChatThreadCar
   // Preview text
   function getPreviewText() {
     if (!lastMessage) return 'Start the conversation';
-    if (lastMessage.sender_id !== currentUserId) return lastMessage.body;
+    if (lastMessage.sender_id !== currentUserId) {
+      if (lastMessage.body.startsWith('[img]')) return '📷 Photo';
+      return lastMessage.body;
+    }
     return lastMessage.status === 'read' ? 'Read' : 'Delivered';
   }
   const previewText = getPreviewText();

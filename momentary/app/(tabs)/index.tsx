@@ -4,6 +4,7 @@ import {
   Text,
   FlatList,
   RefreshControl,
+  Platform,
   TouchableOpacity,
   ScrollView,
   Modal,
@@ -17,11 +18,9 @@ import {
   useWindowDimensions,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useFocusEffect, useRouter } from 'expo-router';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useFocusEffect } from 'expo-router';
 import Svg, { Path } from 'react-native-svg';
 import { PostCard } from '@/components/PostCard';
-import { StoryCircle } from '@/components/StoryCircle';
 import { UserAvatar } from '@/components/social/UserAvatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { getFeedPosts, Post, resolveImageUrl } from '@/lib/api';
@@ -29,32 +28,22 @@ import { timeAgo } from '@/lib/time';
 import { styles } from '@/styles/tabs/feed';
 import { GRADIENT_COLORS, GRADIENT_LOCATIONS } from '@/styles/global';
 
-// Screen size
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
-
-// Stories
-const STORIES: Array<{ id: string; name: string }> = [
-  { id: 'you', name: 'You' },
-  { id: 'sude', name: 'Sude' },
-  { id: 'faye', name: 'Faye' },
-  { id: 'summer', name: 'Summe..' },
-];
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
 // Feed screen
 export default function FeedScreen() {
   const { user } = useAuth();
-  const router = useRouter();
   // Posts list
   const [posts, setPosts] = useState<Post[]>([]);
   // Refreshing
   const [refreshing, setRefreshing] = useState(false);
-  // Reference to scroll to top
+  // scroll ref
   const flatListRef = useRef<FlatList>(null);
   // Open post (null = closed)
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   // Slide animation
   const slideAnim = useRef(new Animated.Value(SCREEN_WIDTH)).current;
-  // Fullscreen image (null = closed)
+  // fullscreen image uri
   const [focusedImageUri, setFocusedImageUri] = useState<string | null>(null);
 
   // Swipe right to close
@@ -97,20 +86,19 @@ export default function FeedScreen() {
     }
   }, []);
 
-  // Load on focus, clean up on leave
+  // load on focus, reset on leave
   useFocusEffect(
     useCallback(() => {
       loadPosts();
       return () => {
-        // Close modals
-        setSelectedPost(null);
+          setSelectedPost(null);
         setFocusedImageUri(null);
         slideAnim.setValue(SCREEN_WIDTH);
       };
-    }, [loadPosts]),
+    }, [loadPosts, slideAnim]),
   );
 
-  // Scroll to top when tab tapped again
+  // scroll to top on tab press
   useEffect(() => {
     const sub = DeviceEventEmitter.addListener('scrollFeedToTop', () => {
       flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
@@ -153,18 +141,6 @@ export default function FeedScreen() {
   const renderHeader = () => (
     <View>
       <Text style={styles.title}>Feed</Text>
-
-      {/* Story circles */}
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.storiesContainer}
-        style={styles.storiesRow}
-      >
-        {STORIES.map((s) => (
-          <StoryCircle key={s.id} name={s.name} />
-        ))}
-      </ScrollView>
     </View>
   );
 
@@ -183,10 +159,7 @@ export default function FeedScreen() {
           <PostCard
             post={item}
             currentUserId={user?.id ?? 0}
-            onDeleted={() => {
-              // Remove deleted post
-              setPosts((prev) => prev.filter((p) => p.id !== item.id));
-            }}
+            onDeleted={() => setPosts((prev) => prev.filter((p) => p.id !== item.id))}
             onPress={() => openPost(item)}
           />
         )}
@@ -202,14 +175,16 @@ export default function FeedScreen() {
         }
         contentContainerStyle={styles.listContent}
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="#444"
-            colors={['#444']}
-            progressBackgroundColor="#f1ede9"
-            progressViewOffset={20}
-          />
+          Platform.OS === 'web' ? undefined : (
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              tintColor="#444"
+              colors={['#444']}
+              progressBackgroundColor="#f1ede9"
+              progressViewOffset={20}
+            />
+          )
         }
         showsVerticalScrollIndicator={false}
       />

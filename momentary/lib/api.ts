@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 
 // Backend URL
-const API_BASE = process.env.EXPO_PUBLIC_API_BASE;
+const API_BASE = normalizeBaseUrl(process.env.EXPO_PUBLIC_API_BASE);
 const PC_IP = process.env.EXPO_PUBLIC_PC_IP;
 
 // User
@@ -11,7 +11,11 @@ export interface User {
   display_name: string;
   email: string;
   avatar_url: string | null;
+  banner_url?: string | null;
   created_at: string;
+  bio?: string | null;
+  status?: string | null;
+  feeling?: string | null;
 }
 
 // Post
@@ -31,6 +35,36 @@ export type FriendRequestStatus = 'pending' | 'accepted' | 'declined';
 export type MessageStatus = 'delivered' | 'read';
 export type RelationshipState = 'self' | 'friends' | 'incoming' | 'outgoing' | 'none';
 
+function isLocalHostname(hostname: string) {
+  return hostname === 'localhost' || hostname === '127.0.0.1' || hostname === '::1';
+}
+
+function normalizeBaseUrl(baseUrl: string | undefined) {
+  if (!baseUrl) return baseUrl;
+
+  try {
+    const url = new URL(baseUrl);
+    if (url.protocol === 'http:' && !isLocalHostname(url.hostname)) {
+      url.protocol = 'https:';
+    }
+    return url.toString().replace(/\/$/, '');
+  } catch {
+    return baseUrl;
+  }
+}
+
+function normalizeRemoteUrl(uri: string) {
+  try {
+    const url = new URL(uri);
+    if (url.protocol === 'http:' && !isLocalHostname(url.hostname)) {
+      url.protocol = 'https:';
+    }
+    return url.toString();
+  } catch {
+    return uri;
+  }
+}
+
 // Friend request
 export interface FriendRequest {
   id: number;
@@ -42,7 +76,7 @@ export interface FriendRequest {
 }
 
 // Friendship
-export interface Friendship {
+interface Friendship {
   id: number;
   user_one_id: number;
   user_two_id: number;
@@ -77,7 +111,7 @@ export interface ChatThread {
 // Turn a relative image path into a full URL
 export function resolveImageUrl(uri: string | null): string | null {
   if (!uri) return null;
-  if (uri.startsWith('http://') || uri.startsWith('https://')) return uri;
+  if (uri.startsWith('http://') || uri.startsWith('https://')) return normalizeRemoteUrl(uri);
   return `https://${PC_IP}${uri}`;
 }
 
@@ -176,7 +210,7 @@ export async function uploadImage(localUri: string): Promise<string> {
 // Update profile fields
 export async function updateUser(
   userId: number,
-  fields: { display_name?: string; email?: string; avatar_url?: string | null },
+  fields: { display_name?: string; email?: string; avatar_url?: string | null; banner_url?: string | null; bio?: string | null; status?: string | null; feeling?: string | null },
 ): Promise<User> {
   const res = await fetch(`${API_BASE}/user.php`, {
     method: 'POST',
@@ -203,6 +237,24 @@ export async function removeUserAvatar(userId: number): Promise<User> {
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || 'Failed to remove avatar');
+  return data.user;
+}
+
+// Upload and set a new banner
+export async function updateUserBanner(userId: number, localUri: string): Promise<User> {
+  const serverUrl = await uploadImage(localUri);
+  return updateUser(userId, { banner_url: serverUrl });
+}
+
+// Remove banner
+export async function removeUserBanner(userId: number): Promise<User> {
+  const res = await fetch(`${API_BASE}/user.php`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: userId, action: 'remove_banner' }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to remove banner');
   return data.user;
 }
 
@@ -234,6 +286,14 @@ export async function createPost(
 // Get all posts for the feed
 export async function getFeedPosts(): Promise<Post[]> {
   const res = await fetch(`${API_BASE}/posts.php`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to load posts');
+  return Array.isArray(data.posts) ? data.posts : [];
+}
+
+// Get posts for a specific user
+export async function getUserPosts(userId: number): Promise<Post[]> {
+  const res = await fetch(`${API_BASE}/posts.php?user_id=${userId}`);
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || 'Failed to load posts');
   return Array.isArray(data.posts) ? data.posts : [];
@@ -311,6 +371,25 @@ export async function cancelFriendRequest(requestId: number): Promise<void> {
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error || 'Failed to cancel request');
+}
+
+// Remove a friendship
+export async function unfriendUser(userId: number, otherId: number): Promise<void> {
+  const res = await fetch(`${API_BASE}/friends.php`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ action: 'unfriend', user_id: userId, other_id: otherId }),
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to unfriend');
+}
+
+// Get all accepted friends for a user
+export async function getFriends(userId: number): Promise<User[]> {
+  const res = await fetch(`${API_BASE}/friends.php?action=list&user_id=${userId}`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || 'Failed to load friends');
+  return data.friends ?? [];
 }
 
 // Get relationship status between two users

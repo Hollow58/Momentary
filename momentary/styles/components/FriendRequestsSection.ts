@@ -1,32 +1,33 @@
 import { StyleSheet } from 'react-native';
+import * as g from '@/styles/global';
 
 export const styles = StyleSheet.create({
   wrapper: {
-    gap: 14,
+    gap: 12,
   },
   column: {
     gap: 12,
   },
   columnTitle: {
     fontFamily: 'Nunito_700Bold',
-    color: '#40312B',
+    color: g.PRIMARY_ACTION,
     fontSize: 18,
   },
   card: {
     backgroundColor: 'rgba(250, 244, 238, 0.9)',
-    borderRadius: 24,
+    borderRadius: g.CARD_RADIUS,
     padding: 16,
     borderWidth: 1,
-    borderColor: 'rgba(64, 49, 43, 0.06)',
+    borderColor: g.SURFACE_BORDER,
   },
   name: {
     fontFamily: 'Nunito_700Bold',
-    color: '#33261F',
+    color: g.TEXT_PRIMARY,
     fontSize: 16,
   },
   meta: {
     fontFamily: 'Nunito_400Regular',
-    color: '#7C6C5B',
+    color: g.TEXT_SECONDARY,
     marginTop: 4,
   },
   actions: {
@@ -36,31 +37,31 @@ export const styles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    backgroundColor: 'rgba(64, 49, 43, 0.07)',
-    borderRadius: 16,
-    paddingVertical: 11,
+    backgroundColor: g.CONTROL_TINT_SOFT,
+    borderRadius: g.CONTROL_RADIUS,
+    paddingVertical: 12,
     alignItems: 'center',
   },
   buttonPrimary: {
-    backgroundColor: '#40312B',
+    backgroundColor: g.PRIMARY_ACTION,
   },
   buttonText: {
     fontFamily: 'Nunito_700Bold',
-    color: '#40312B',
+    color: g.PRIMARY_ACTION,
   },
   buttonPrimaryText: {
     fontFamily: 'Nunito_700Bold',
-    color: '#F8F2EC',
+    color: g.PRIMARY_ACTION_TEXT,
   },
   emptyCard: {
     backgroundColor: 'rgba(250, 244, 238, 0.72)',
-    borderRadius: 22,
+    borderRadius: g.CARD_RADIUS,
     padding: 16,
     borderWidth: 1,
     borderColor: 'rgba(64, 49, 43, 0.05)',
   },
   emptyText: {
     fontFamily: 'Nunito_400Regular',
-    color: '#7C6C5B',
+    color: g.TEXT_SECONDARY,
   },
 });

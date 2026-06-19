@@ -27,12 +27,12 @@ const RELATIONSHIP: Record<RelationshipState, { label: string; backgroundColor: 
 };
 
 // Get label
-export function relationshipLabel(state: RelationshipState) {
+function relationshipLabel(state: RelationshipState) {
   return RELATIONSHIP[state].label;
 }
 
 // Get background color
-export function relationshipPillStyle(state: RelationshipState) {
+function relationshipPillStyle(state: RelationshipState) {
   return { backgroundColor: RELATIONSHIP[state].backgroundColor };
 }
 

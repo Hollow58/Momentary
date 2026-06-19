@@ -39,7 +39,7 @@ function RootNavigator() {
       // Already logged in -> go to the main app
       router.replace('/(tabs)');
     }
-  }, [user, isLoading, segments]);
+  }, [user, isLoading, router, segments]);
 
   // Show a spinner while the app checks if someone is logged in
   if (isLoading) {

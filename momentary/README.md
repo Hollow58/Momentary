@@ -2,6 +2,29 @@
 
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
+## MySQL-backed Auth Setup
+
+This app is configured to use Plesk-hosted PHP endpoints for auth (register/login/session restore).
+
+1. Backend setup on Plesk
+
+   - Upload `../backend/` files to your Plesk `httpdocs/momentary/backend/` folder
+   - Confirm these endpoints are reachable:
+     - `https://102722.stu.sd-lab.nl/momentary/backend/register.php`
+     - `https://102722.stu.sd-lab.nl/momentary/backend/login.php`
+     - `https://102722.stu.sd-lab.nl/momentary/backend/user.php?id=1`
+
+2. Database schema import
+
+   - In Plesk phpMyAdmin, import `../backend/database.sql` into the `momentaryApp` database
+   - Skip the `USE momentaryApp;` line if permission errors occur
+
+3. App is ready to use
+
+   - Create an account from the Register screen
+   - App session is persisted with OS-backed secure storage on native and restored on next launch
+   - API base is already configured in `lib/database.ts` for `https://102722.stu.sd-lab.nl/momentary/backend`
+
 ## Get started
 
 1. Install dependencies

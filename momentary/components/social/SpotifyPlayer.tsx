@@ -1,9 +1,9 @@
+﻿import { styles } from '@/styles/components/SpotifyPlayer';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Animated, Easing, Image, Text, View } from 'react-native';
-import Svg, { Defs, RadialGradient, Stop, Ellipse } from 'react-native-svg';
-import { styles } from '@/styles/components/SpotifyPlayer';
+import Svg, { Defs, Ellipse, RadialGradient, Stop } from 'react-native-svg';
 
-const SPOTIFY_BASE = 'https://102722.stu.sd-lab.nl/spotify';
+const SPOTIFY_BASE = process.env.EXPO_PUBLIC_SPOTIFY_BASE;
 const FALLBACK_PALETTE = ['#1c1c1c', '#242424', '#2e2e2e', '#1a1a1a', '#222222', '#282828'];
 
 type SpotifyTrack = {
@@ -43,10 +43,11 @@ type BlobProps = {
   endY: number;
   duration: number;
   opacity?: number;
+  blendMode?: 'screen' | 'overlay' | 'normal';
 };
 
 // Animated gradient blob
-function Blob({ id, color, size, startX, startY, endX, endY, duration, opacity = 0.85 }: BlobProps) {
+function Blob({ id, color, size, startX, startY, endX, endY, duration, opacity = 0.85, blendMode = 'normal' }: BlobProps) {
   // Animation loop
   const anim = useRef(new Animated.Value(0)).current;
 
@@ -75,6 +76,7 @@ function Blob({ id, color, size, startX, startY, endX, endY, duration, opacity =
         width: size,
         height: size,
         transform: [{ translateX }, { translateY }, { scale }],
+        mixBlendMode: blendMode,
       }}
     >
       <Svg width={size} height={size}>
@@ -168,38 +170,38 @@ export function SpotifyPlayer({ userId }: SpotifyPlayerProps) {
       {/* Gradient background */}
       <View style={styles.gradientBg}>
         {/* Corner blobs */}
-        <Blob id="1" color={p[0]} size={480} startX={-140} startY={-130} endX={-110} endY={-100} duration={8000} opacity={1} />
-        <Blob id="2" color={p[1]} size={480} startX={80}   startY={-130} endX={110}  endY={-100} duration={9000} opacity={1} />
-        <Blob id="3" color={p[2]} size={480} startX={-130} startY={10}   endX={-100} endY={40}   duration={10000} opacity={1} />
-        <Blob id="4" color={p[3]} size={480} startX={70}   startY={0}    endX={100}  endY={30}   duration={11000} opacity={1} />
-        {/* Center blobs */}
-        <Blob id="5" color={p[4]} size={400} startX={-20}  startY={-30}  endX={10}   endY={-10}  duration={12000} opacity={0.85} />
-        <Blob id="6" color={p[5]} size={420} startX={10}   startY={-10}  endX={-20}  endY={10}   duration={13000} opacity={0.70} />
+        <Blob id="1" color={p[0]} size={480} startX={-140} startY={-130} endX={-110} endY={-100} duration={16000} opacity={1}    blendMode="screen" />
+        <Blob id="2" color={p[1]} size={480} startX={80}   startY={-130} endX={110}  endY={-100} duration={18000} opacity={1}    blendMode="screen" />
+        <Blob id="3" color={p[2]} size={480} startX={-130} startY={10}   endX={-100} endY={40}   duration={20000} opacity={1}    blendMode="screen" />
+        <Blob id="4" color={p[3]} size={480} startX={70}   startY={0}    endX={100}  endY={30}   duration={22000} opacity={1}    blendMode="screen" />
+        {/* Center blobs — large enough to coat the whole card */}
+        <Blob id="5" color={p[4]} size={560} startX={-80}  startY={-80}  endX={-50}  endY={-50}  duration={24000} opacity={0.85} blendMode="overlay" />
+        <Blob id="6" color={p[5]} size={560} startX={-20}  startY={-40}  endX={20}   endY={0}    duration={26000} opacity={0.70} blendMode="overlay" />
       </View>
       {/* Dark overlay */}
       <View style={styles.overlay} />
       {/* Track info */}
       <View style={styles.content}>
-        <View style={styles.trackRow}>
-          {spotify.albumArt ? (
-            <Image source={{ uri: spotify.albumArt }} style={styles.albumArt} />
-          ) : (
-            <View style={[styles.albumArt, styles.albumPlaceholder]}>
-              <Text style={styles.albumPlaceholderText}>♫</Text>
+        {spotify.albumArt ? (
+          <Image source={{ uri: spotify.albumArt }} style={styles.albumArt} />
+        ) : (
+          <View style={[styles.albumArt, styles.albumPlaceholder]}>
+            <Text style={styles.albumPlaceholderText}>♫</Text>
+          </View>
+        )}
+        <View style={styles.trackInfo}>
+          <Text style={styles.trackTitle} numberOfLines={1}>{spotify.title}</Text>
+          <Text style={styles.trackArtist} numberOfLines={1}>{spotify.artist}</Text>
+          <Text style={styles.trackAlbum} numberOfLines={1}>{spotify.album}</Text>
+          <View style={styles.progressWrap}>
+            <View style={styles.progressTimes}>
+              <Text style={styles.progressTime}>{formatMs(displayProgress)}</Text>
+              <Text style={styles.progressTime}>{formatMs(duration)}</Text>
             </View>
-          )}
-          <View style={styles.trackInfo}>
-            <Text style={styles.trackTitle} numberOfLines={1}>{spotify.title}</Text>
-            <Text style={styles.trackArtist} numberOfLines={1}>{spotify.artist}</Text>
-            <Text style={styles.trackAlbum} numberOfLines={1}>{spotify.album}</Text>
+            <View style={styles.progressBarBg}>
+              <View style={[styles.progressBarFill, { width: `${Math.min(progressPct, 100)}%` }]} />
+            </View>
           </View>
-        </View>
-        <View style={styles.progressRow}>
-          <Text style={styles.progressTime}>{formatMs(displayProgress)}</Text>
-          <View style={styles.progressBarBg}>
-            <View style={[styles.progressBarFill, { width: `${Math.min(progressPct, 100)}%` }]} />
-          </View>
-          <Text style={styles.progressTime}>{formatMs(duration)}</Text>
         </View>
       </View>
     </View>

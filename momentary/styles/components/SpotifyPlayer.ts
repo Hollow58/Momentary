@@ -4,79 +4,76 @@ export const styles = StyleSheet.create({
   card: {
     borderRadius: 22,
     overflow: 'hidden',
-    marginTop: 20,
+    marginTop: 4,
     backgroundColor: '#111',
   },
-  /* Blob container — mirrors .gradient-bg */
   gradientBg: {
     ...StyleSheet.absoluteFillObject,
     overflow: 'hidden',
+    filter: [{ saturate: 1.5 }, { contrast: 1.18 }],
   },
-  /* Dark overlay — mirrors .overlay { background: rgba(0,0,0,0.22) } */
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.22)',
   },
-  /* Content sits on z-index 2 above blobs + overlay */
   content: {
-    padding: 20,
-  },
-  trackRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 16,
-    width: '100%',
+    justifyContent: 'center',
+    gap: 20,
+    padding: 24,
   },
   albumArt: {
-    width: 72,
-    height: 72,
-    borderRadius: 12,
+    width: 120,
+    height: 120,
+    borderRadius: 16,
     backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    flexShrink: 0,
   },
   albumPlaceholder: {
     alignItems: 'center',
     justifyContent: 'center',
   },
   albumPlaceholderText: {
-    fontSize: 28,
+    fontSize: 48,
     color: 'rgba(255, 255, 255, 0.4)',
   },
   trackInfo: {
     flex: 1,
+    minWidth: 0,
   },
   trackTitle: {
     fontFamily: 'Nunito_700Bold',
-    fontSize: 17,
+    fontSize: 22,
+    lineHeight: 26,
     color: '#fff',
   },
   trackArtist: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 14,
     color: 'rgba(255, 255, 255, 0.8)',
-    marginTop: 3,
+    marginTop: 6,
   },
   trackAlbum: {
     fontFamily: 'Nunito_400Regular',
-    fontSize: 12,
-    color: 'rgba(255, 255, 255, 0.5)',
-    marginTop: 2,
+    fontSize: 11,
+    color: 'rgba(255, 255, 255, 0.55)',
+    marginTop: 4,
   },
-  progressRow: {
+  progressWrap: {
+    marginTop: 16,
+  },
+  progressTimes: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginTop: 14,
-    width: '100%',
+    justifyContent: 'space-between',
+    marginBottom: 6,
   },
   progressTime: {
     fontFamily: 'Nunito_400Regular',
     fontSize: 11,
     color: 'rgba(255, 255, 255, 0.55)',
-    minWidth: 32,
-    textAlign: 'center',
   },
   progressBarBg: {
-    flex: 1,
     height: 4,
     borderRadius: 2,
     backgroundColor: 'rgba(255, 255, 255, 0.18)',

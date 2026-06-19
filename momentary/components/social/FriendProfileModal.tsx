@@ -1,15 +1,21 @@
 import React from 'react';
-import { Modal, Pressable, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import { type FriendRequestView, type RelationshipState, type User } from '@/lib/api';
+import * as g from '@/styles/global';
 
 import { RelationshipBadge } from './RelationshipBadge';
-// Spotify Widget
 import { SpotifyPlayer } from './SpotifyPlayer';
 import { UserAvatar } from './UserAvatar';
-import { styles } from '@/styles/components/FriendProfileModal';
 
-type FriendProfileModalProps = {
+type Props = {
   currentUser: User | null;
   selectedUser: User | null;
   relationship: RelationshipState;
@@ -18,11 +24,10 @@ type FriendProfileModalProps = {
   onClose: () => void;
   onSendRequest: (targetUserId: number) => void;
   onAcceptRequest: (requestId: number) => void;
-  onDeclineRequest: (requestId: number) => void;
   onCancelRequest: (requestId: number) => void;
+  onUnfriend: (targetUserId: number) => void;
 };
 
-// Profile modal
 export function FriendProfileModal({
   currentUser,
   selectedUser,
@@ -32,140 +37,149 @@ export function FriendProfileModal({
   onClose,
   onSendRequest,
   onAcceptRequest,
-  onDeclineRequest,
   onCancelRequest,
-}: FriendProfileModalProps) {
+  onUnfriend,
+}: Props) {
+  // Derive the primary action button from the current relationship state
+  let primaryAction: React.ReactNode = null;
+  if (currentUser && selectedUser) {
+    if (relationship === 'friends') {
+      primaryAction = (
+        <TouchableOpacity style={styles.unfriendBtn} onPress={() => onUnfriend(selectedUser.id)} activeOpacity={0.85}>
+          <Text style={styles.unfriendBtnText}>Unfriend</Text>
+        </TouchableOpacity>
+      );
+    } else if (relationship === 'incoming') {
+      const req = incomingRequests.find((r) => r.from_user_id === selectedUser.id);
+      primaryAction = (
+        <TouchableOpacity style={styles.primaryBtn} onPress={() => req && onAcceptRequest(req.id)} activeOpacity={0.85}>
+          <Text style={styles.primaryBtnText}>Accept request</Text>
+        </TouchableOpacity>
+      );
+    } else if (relationship === 'outgoing') {
+      const req = outgoingRequests.find((r) => r.to_user_id === selectedUser.id);
+      primaryAction = (
+        <TouchableOpacity style={styles.primaryBtn} onPress={() => req && onCancelRequest(req.id)} activeOpacity={0.85}>
+          <Text style={styles.primaryBtnText}>Cancel request</Text>
+        </TouchableOpacity>
+      );
+    } else if (relationship === 'none') {
+      primaryAction = (
+        <TouchableOpacity style={styles.primaryBtn} onPress={() => onSendRequest(selectedUser.id)} activeOpacity={0.85}>
+          <Text style={styles.primaryBtnText}>Send request</Text>
+        </TouchableOpacity>
+      );
+    }
+  }
 
   return (
-    // Fade in modal overlay
-    <Modal visible={selectedUser !== null} transparent animationType="fade" onRequestClose={onClose}>
+    <Modal visible={selectedUser !== null} transparent animationType="slide" onRequestClose={onClose}>
       <View style={styles.backdrop}>
-        {/* Close on outside tap */}
-        <Pressable style={{ position: 'absolute', left: 0, right: 0, top: 0, bottom: 0 }} onPress={onClose} />
-        {selectedUser ? (
-          <View style={styles.card}>
-            {/* Header */}
-            <View style={styles.header}>
-              <Text style={styles.title}>Profile</Text>
-              <TouchableOpacity onPress={onClose} style={styles.closeButton} activeOpacity={0.8}>
-                <Text style={styles.closeButtonText}>Close</Text>
-              </TouchableOpacity>
-            </View>
+        <TouchableOpacity style={styles.dismissArea} onPress={onClose} activeOpacity={1} />
 
-            {/* Info */}
-            <View style={styles.profileRow}>
-              <UserAvatar user={selectedUser} size={72} style={styles.avatar} letterStyle={styles.avatarLetter} />
-              <View style={styles.profileTextBlock}>
-                <Text style={styles.name}>{selectedUser.display_name}</Text>
-                <Text style={styles.username}>@{selectedUser.username}</Text>
-                <Text style={styles.email}>{selectedUser.email}</Text>
+        {selectedUser && (
+          <View style={styles.sheet}>
+            {/* Header: avatar + name, close button */}
+            <View style={styles.nameplate}>
+              <View style={styles.identity}>
+                <UserAvatar user={selectedUser} size={40} />
+                <View>
+                  <Text style={styles.displayName}>{selectedUser.display_name}</Text>
+                  <Text style={styles.username}>@{selectedUser.username}</Text>
+                </View>
               </View>
-            </View>
-
-            {/* Relationship status */}
-            <View style={styles.body}>
-              <RelationshipBadge state={relationship} />
-            </View>
-
-            {/* Spotify widget */}
-            <SpotifyPlayer userId={selectedUser.id} />
-
-            {/* Action buttons */}
-            <View style={styles.actions}>
-              <TouchableOpacity style={styles.secondaryButton} onPress={onClose} activeOpacity={0.85}>
-                <Text style={styles.secondaryButtonText}>Dismiss</Text>
+              <TouchableOpacity onPress={onClose} style={styles.closeBtn} activeOpacity={0.7}>
+                <Text style={styles.closeText}>Close</Text>
               </TouchableOpacity>
-              {renderPrimaryAction({
-                relationship,
-                currentUser,
-                selectedUser,
-                incomingRequests,
-                outgoingRequests,
-                onSendRequest,
-                onAcceptRequest,
-                onDeclineRequest,
-                onCancelRequest,
-              })}
             </View>
+
+            {/* Scrollable content */}
+            <ScrollView contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+              <View style={styles.section}>
+                <RelationshipBadge state={relationship} />
+              </View>
+
+              <SpotifyPlayer userId={selectedUser.id} />
+
+              {primaryAction && <View style={styles.actions}>{primaryAction}</View>}
+            </ScrollView>
           </View>
-        ) : null}
+        )}
       </View>
     </Modal>
   );
 }
 
-// Primary action button
-function renderPrimaryAction({
-  relationship,
-  currentUser,
-  selectedUser,
-  incomingRequests,
-  outgoingRequests,
-  onSendRequest,
-  onAcceptRequest,
-  onDeclineRequest,
-  onCancelRequest,
-}: {
-  relationship: RelationshipState;
-  currentUser: User | null;
-  selectedUser: User;
-  incomingRequests: FriendRequestView[];
-  outgoingRequests: FriendRequestView[];
-  onSendRequest: (targetUserId: number) => void;
-  onAcceptRequest: (requestId: number) => void;
-  onDeclineRequest: (requestId: number) => void;
-  onCancelRequest: (requestId: number) => void;
-}) {
-  if (!currentUser) return null;
-
-  if (relationship === 'friends') {
-    return (
-      <View style={styles.primaryButtonLocked}>
-        <Text style={styles.primaryButtonText}>Already friends</Text>
-      </View>
-    );
-  }
-
-  if (relationship === 'incoming') {
-    const incoming = incomingRequests.find((request) => request.from_user_id === selectedUser.id);
-    return (
-      <TouchableOpacity
-        style={styles.primaryButton}
-        onPress={() => {
-          if (incoming) {
-            onAcceptRequest(incoming.id);
-          }
-        }}
-        activeOpacity={0.85}
-      >
-        <Text style={styles.primaryButtonText}>Accept request</Text>
-      </TouchableOpacity>
-    );
-  }
-
-  if (relationship === 'outgoing') {
-    const outgoing = outgoingRequests.find((request) => request.to_user_id === selectedUser.id);
-    return (
-      <TouchableOpacity
-        style={styles.primaryButton}
-        onPress={() => {
-          if (outgoing) {
-            onCancelRequest(outgoing.id);
-          }
-        }}
-        activeOpacity={0.85}
-      >
-        <Text style={styles.primaryButtonText}>Cancel request</Text>
-      </TouchableOpacity>
-    );
-  }
-
-  if (relationship === 'self') return null;
-
-  return (
-    <TouchableOpacity style={styles.primaryButton} onPress={() => onSendRequest(selectedUser.id)} activeOpacity={0.85}>
-      <Text style={styles.primaryButtonText}>Send request</Text>
-    </TouchableOpacity>
-  );
-}
+const styles = StyleSheet.create({
+  backdrop: g.modalBackdrop,
+  dismissArea: {
+    flex: 1,
+  },
+  sheet: {
+    ...g.modalSheetBase,
+    maxHeight: '90%',
+  },
+  nameplate: {
+    ...g.modalNameplate,
+    justifyContent: 'space-between',
+  },
+  identity: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+  },
+  displayName: {
+    fontFamily: 'Nunito_700Bold',
+    fontSize: 17,
+    color: g.TEXT_PRIMARY,
+  },
+  username: {
+    fontFamily: 'Nunito_400Regular',
+    fontSize: 13,
+    color: g.TEXT_SECONDARY,
+  },
+  closeBtn: {
+    paddingVertical: 8,
+    paddingHorizontal: 2,
+  },
+  closeText: {
+    fontFamily: 'Nunito_600SemiBold',
+    fontSize: 15,
+    color: g.PRIMARY_ACTION,
+  },
+  content: {
+    paddingHorizontal: 18,
+    paddingTop: 18,
+    paddingBottom: 48,
+  },
+  section: {
+    backgroundColor: 'rgba(64, 49, 43, 0.04)',
+    borderRadius: g.CARD_RADIUS,
+    marginBottom: 12,
+  },
+  actions: {
+    marginTop: 12,
+  },
+  primaryBtn: {
+    backgroundColor: g.PRIMARY_ACTION,
+    borderRadius: g.CONTROL_RADIUS,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  primaryBtnText: {
+    fontFamily: 'Nunito_700Bold',
+    color: g.PRIMARY_ACTION_TEXT,
+  },
+  unfriendBtn: {
+    backgroundColor: '#C0392B',
+    borderRadius: g.CONTROL_RADIUS,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  unfriendBtnText: {
+    fontFamily: 'Nunito_700Bold',
+    color: '#FFFFFF',
+  },
+});
 
