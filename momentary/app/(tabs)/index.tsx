@@ -13,7 +13,6 @@ import {
   Image,
   DeviceEventEmitter,
   PanResponder,
-  StatusBar,
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
@@ -30,33 +29,22 @@ import { GRADIENT_COLORS, GRADIENT_LOCATIONS } from '@/styles/global';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 
-// Feed screen
 export default function FeedScreen() {
   const { user } = useAuth();
-  // Posts list
   const [posts, setPosts] = useState<Post[]>([]);
-  // Refreshing
   const [refreshing, setRefreshing] = useState(false);
-  // scroll ref
   const flatListRef = useRef<FlatList>(null);
-  // Open post (null = closed)
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  // Slide animation
   const slideAnim = useRef(new Animated.Value(SCREEN_WIDTH)).current;
-  // fullscreen image uri
   const [focusedImageUri, setFocusedImageUri] = useState<string | null>(null);
 
-  // Swipe right to close
   const panResponder = useRef(
     PanResponder.create({
-      // Only horizontal swipes
       onMoveShouldSetPanResponder: (_evt, gestureState) =>
         gestureState.dx > 15 && Math.abs(gestureState.dy) < Math.abs(gestureState.dx),
-      // Follow finger
       onPanResponderMove: (_evt, gestureState) => {
         if (gestureState.dx > 0) slideAnim.setValue(gestureState.dx);
       },
-      // Close or snap back
       onPanResponderRelease: (_evt, gestureState) => {
         if (gestureState.dx > SCREEN_WIDTH * 0.3 || gestureState.vx > 0.5) {
           Animated.timing(slideAnim, {
@@ -76,7 +64,6 @@ export default function FeedScreen() {
     })
   ).current;
 
-  // Load posts
   const loadPosts = useCallback(async () => {
     try {
       const data = await getFeedPosts();
@@ -86,19 +73,17 @@ export default function FeedScreen() {
     }
   }, []);
 
-  // load on focus, reset on leave
   useFocusEffect(
     useCallback(() => {
       loadPosts();
       return () => {
-          setSelectedPost(null);
+        setSelectedPost(null);
         setFocusedImageUri(null);
         slideAnim.setValue(SCREEN_WIDTH);
       };
     }, [loadPosts, slideAnim]),
   );
 
-  // scroll to top on tab press
   useEffect(() => {
     const sub = DeviceEventEmitter.addListener('scrollFeedToTop', () => {
       flatListRef.current?.scrollToOffset({ offset: 0, animated: true });
@@ -106,14 +91,12 @@ export default function FeedScreen() {
     return () => sub.remove();
   }, []);
 
-  // Pull to refresh
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
     await loadPosts();
     setRefreshing(false);
   }, [loadPosts]);
 
-  // Open post detail
   const openPost = (post: Post) => {
     setSelectedPost(post);
     slideAnim.setValue(SCREEN_WIDTH);
@@ -125,7 +108,6 @@ export default function FeedScreen() {
     }).start();
   };
 
-  // Close post detail
   const closePost = () => {
     setFocusedImageUri(null);
     Animated.timing(slideAnim, {
@@ -137,7 +119,6 @@ export default function FeedScreen() {
 
   const { width: windowWidth, height: windowHeight } = useWindowDimensions();
 
-  // Render header
   const renderHeader = () => (
     <View>
       <Text style={styles.title}>Feed</Text>
@@ -150,7 +131,6 @@ export default function FeedScreen() {
       locations={[...GRADIENT_LOCATIONS]}
       style={styles.screen}
     >
-      {/* Posts list */}
       <FlatList
         ref={flatListRef}
         data={posts}
@@ -165,7 +145,6 @@ export default function FeedScreen() {
         )}
         ListHeaderComponent={renderHeader}
         ListEmptyComponent={
-          // No posts
           <View style={styles.empty}>
             <Text style={styles.emptyText}>No posts yet</Text>
             <Text style={styles.emptySubText}>
@@ -189,10 +168,13 @@ export default function FeedScreen() {
         showsVerticalScrollIndicator={false}
       />
 
-      {/* Post detail modal */}
-      <Modal visible={selectedPost !== null} transparent animationType="none" onRequestClose={focusedImageUri ? () => setFocusedImageUri(null) : closePost}>
+      <Modal
+        visible={selectedPost !== null}
+        transparent
+        animationType="none"
+        onRequestClose={focusedImageUri ? () => setFocusedImageUri(null) : closePost}
+      >
         <View style={{ flex: 1 }}>
-          {/* Slides in/out */}
           <Animated.View
             {...panResponder.panHandlers}
             style={[styles.detailOverlay, { transform: [{ translateX: slideAnim }] }]}
@@ -202,7 +184,6 @@ export default function FeedScreen() {
               locations={[...GRADIENT_LOCATIONS]}
               style={styles.detailGradient}
             >
-              {/* Back button */}
               <View style={styles.detailHeader}>
                 <TouchableOpacity onPress={closePost} style={styles.detailBackBtn} activeOpacity={0.7}>
                   <Svg width={12} height={20} viewBox="0 0 12 20" fill="none">
@@ -210,33 +191,46 @@ export default function FeedScreen() {
                   </Svg>
                 </TouchableOpacity>
               </View>
-              {/* Post details */}
+
               {selectedPost && (
-                <ScrollView style={styles.detailScroll} contentContainerStyle={styles.detailScrollContent} showsVerticalScrollIndicator={false}>
-                  {/* Avatar, name, time */}
+                <ScrollView
+                  style={styles.detailScroll}
+                  contentContainerStyle={styles.detailScrollContent}
+                  showsVerticalScrollIndicator={false}
+                >
                   <View style={styles.detailUserRow}>
                     <UserAvatar
-                      user={{ avatar_url: selectedPost.avatar_url, display_name: selectedPost.display_name || selectedPost.username || '?' }}
+                      user={{
+                        avatar_url: selectedPost.avatar_url,
+                        display_name: String(selectedPost.display_name || selectedPost.username || '?'),
+                      }}
                       size={52}
                       style={styles.detailAvatarSpacing}
                       letterStyle={styles.detailAvatarLetter}
                     />
                     <View style={{ flex: 1 }}>
-                      <Text style={styles.detailUserName}>{selectedPost.display_name}</Text>
-                      <Text style={styles.detailTimestamp}>{timeAgo(selectedPost.created_at)}</Text>
+                      <Text style={styles.detailUserName}>
+                        {String(selectedPost.display_name ?? '')}
+                      </Text>
+                      <Text style={styles.detailTimestamp}>
+                        {String(timeAgo(selectedPost.created_at ?? ''))}
+                      </Text>
                     </View>
                   </View>
 
-                  {/* Caption */}
-                  {selectedPost.caption && (
-                    <Text style={styles.detailCaption}>{selectedPost.caption}</Text>
+                  {!!selectedPost.caption?.trim() && (
+                    <Text style={styles.detailCaption}>
+                      {String(selectedPost.caption)}
+                    </Text>
                   )}
 
-                  {/* Image, tap for fullscreen */}
-                  {selectedPost.image_uri && (
+                  {!!selectedPost.image_uri && (
                     <TouchableOpacity
                       activeOpacity={0.9}
-                      onPress={() => setFocusedImageUri(resolveImageUrl(selectedPost.image_uri)!)}
+                      onPress={() => {
+                        const uri = resolveImageUrl(selectedPost.image_uri);
+                        if (uri) setFocusedImageUri(uri);
+                      }}
                     >
                       <View style={styles.detailImageContainer}>
                         <Image
@@ -252,11 +246,8 @@ export default function FeedScreen() {
             </LinearGradient>
           </Animated.View>
 
-          {/* Fullscreen image viewer */}
-          {focusedImageUri && (
+          {!!focusedImageUri && (
             <View style={[StyleSheet.absoluteFill, styles.imageViewerOverlay]}>
-              <StatusBar barStyle="light-content" />
-              {/* Close button */}
               <TouchableOpacity
                 style={styles.imageViewerClose}
                 onPress={() => setFocusedImageUri(null)}
@@ -264,7 +255,6 @@ export default function FeedScreen() {
               >
                 <Text style={styles.imageViewerCloseText}>✕</Text>
               </TouchableOpacity>
-              {/* Fullscreen image */}
               <Image
                 source={{ uri: focusedImageUri }}
                 style={{ width: windowWidth, height: windowHeight }}
@@ -277,4 +267,3 @@ export default function FeedScreen() {
     </LinearGradient>
   );
 }
-

@@ -20,20 +20,15 @@ interface PostCardProps {
   onPress?: () => void;
 }
 
-// Post card in the feed
 export function PostCard({ post, currentUserId, onDeleted, onPress }: PostCardProps) {
-  // Card width
   const { width } = useWindowDimensions();
   const cardMaxWidth = Math.min(width - 32, 680);
   const isLarge = width >= 600;
 
-  // Post image
   const imageUrl = resolveImageUrl(post.image_uri);
-  // Check if current user owns this post
   const isOwner = Number(post.user_id) === Number(currentUserId);
   const imageSource = imageUrl ? { uri: imageUrl } : undefined;
 
-  // Delete post
   const handleDelete = () => {
     const doDelete = async () => {
       try {
@@ -45,7 +40,6 @@ export function PostCard({ post, currentUserId, onDeleted, onPress }: PostCardPr
       }
     };
 
-    // Confirm before deleting
     if (Platform.OS === 'web') {
       if (window.confirm('Delete this post?')) doDelete();
     } else {
@@ -64,7 +58,6 @@ export function PostCard({ post, currentUserId, onDeleted, onPress }: PostCardPr
         activeOpacity={0.85}
         style={[styles.card, { maxWidth: cardMaxWidth }]}
       >
-        {/* Delete button */}
         {isOwner && (
           <TouchableOpacity
             onPress={handleDelete}
@@ -76,7 +69,6 @@ export function PostCard({ post, currentUserId, onDeleted, onPress }: PostCardPr
           </TouchableOpacity>
         )}
 
-        {/* User info */}
         <View style={styles.userRow}>
           <UserAvatar
             user={{ avatar_url: post.avatar_url, display_name: post.display_name || post.username || '?' }}
@@ -90,12 +82,14 @@ export function PostCard({ post, currentUserId, onDeleted, onPress }: PostCardPr
           </View>
         </View>
 
-        {/* Divider */}
         <View style={styles.divider} />
 
-        {/* Post content */}
         <View style={[styles.body, !imageSource && styles.bodyWithoutImage]}>
-          {post.caption ? <Text style={[styles.caption, isLarge && styles.captionLarge]} numberOfLines={2}>{post.caption}</Text> : null}
+          {post.caption ? (
+            <Text style={[styles.caption, isLarge && styles.captionLarge]} numberOfLines={2}>
+              {post.caption}
+            </Text>
+          ) : null}
           {imageSource ? (
             <View style={styles.imageContainer}>
               <Image source={imageSource} style={styles.postImage} resizeMode="cover" />
@@ -106,5 +100,3 @@ export function PostCard({ post, currentUserId, onDeleted, onPress }: PostCardPr
     </View>
   );
 }
-
-

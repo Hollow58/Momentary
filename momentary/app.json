@@ -41,7 +41,6 @@
         }
       ],
       "expo-font",
-      "expo-status-bar",
       "expo-secure-store"
     ],
     "experiments": {
