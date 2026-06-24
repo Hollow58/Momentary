@@ -2,11 +2,40 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   flex: { flex: 1 },
+  wrapper: {
+    flex: 1,
+  },
   container: {
     flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: 32,
     paddingBottom: 40,
+  },
+  diaryCorner: {
+    position: 'absolute',
+    top: -30,
+    left: 0,
+    width: 160,
+    height: 300,
+    overflow: 'hidden',
+    zIndex: 0,
+  },
+  diaryImage: {
+    position: 'absolute',
+    top: 0,
+    left: -160,
+    width: 320,
+    height: 300,
+  },
+  backBtn: {
+    position: 'absolute',
+    top: 54,
+    left: 16,
+    zIndex: 10,
+    width: 48,
+    height: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   title: {
     fontFamily: 'GildaDisplay_400Regular',

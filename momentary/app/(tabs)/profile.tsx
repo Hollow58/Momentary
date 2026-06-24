@@ -1,3 +1,5 @@
+import { ImageViewer } from '@/components/ImageViewer';
+import { DiaryPostCard } from '@/components/social/DiaryPostCard';
 import { SpotifyPlayer } from '@/components/social/SpotifyPlayer';
 import { UserAvatar } from '@/components/social/UserAvatar';
 import { useAuth } from '@/contexts/AuthContext';
@@ -119,6 +121,7 @@ export default function ProfileScreen() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [statusOpen, setStatusOpen] = useState(false);
   const [diaryOpen, setDiaryOpen] = useState(false);
+  const [focusedImageUri, setFocusedImageUri] = useState<string | null>(null);
 
   // Editable fields
   const [displayName, setDisplayName] = useState(user?.display_name ?? '');
@@ -358,10 +361,19 @@ export default function ProfileScreen() {
 
         </ScrollView>
 
-        <Modal visible={diaryOpen} animationType="slide" presentationStyle="pageSheet" onRequestClose={() => setDiaryOpen(false)}>
+        <Modal
+          visible={diaryOpen}
+          animationType="slide"
+          presentationStyle="pageSheet"
+          onRequestClose={() => focusedImageUri ? setFocusedImageUri(null) : setDiaryOpen(false)}
+        >
           <LinearGradient colors={[...GRADIENT_COLORS]} locations={[...GRADIENT_LOCATIONS]} style={{ flex: 1 }}>
             <View style={styles.modalHeader}>
-              <TouchableOpacity onPress={() => setDiaryOpen(false)} style={styles.modalCloseBtn} hitSlop={12}>
+              <TouchableOpacity
+                onPress={() => focusedImageUri ? setFocusedImageUri(null) : setDiaryOpen(false)}
+                style={styles.modalCloseBtn}
+                hitSlop={12}
+              >
                 <BackIcon size={22} color="#33261F" />
               </TouchableOpacity>
               <View style={{ flex: 1 }} />
@@ -375,21 +387,15 @@ export default function ProfileScreen() {
               <FlatList
                 data={posts}
                 keyExtractor={p => String(p.id)}
-                contentContainerStyle={styles.diaryList}
-                renderItem={({ item: post }) => {
-                  const imageUrl = resolveImageUrl(post.image_uri);
-                  return (
-                    <View style={styles.diaryPolaroid}>
-                      <View style={styles.diaryPolaroidImageBox}>
-                        {imageUrl
-                          ? <Image source={{ uri: imageUrl }} style={styles.diaryPolaroidImage} />
-                          : <View style={styles.diaryPolaroidPlaceholder}><Text style={styles.polaroidPlaceholderX}>×</Text></View>}
-                      </View>
-                      <Text style={styles.diaryPolaroidCaption}>{post.caption}</Text>
-                    </View>
-                  );
-                }}
+                contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 40, gap: 16 }}
+                renderItem={({ item: post }) => (
+                  <DiaryPostCard post={post} onImagePress={(uri) => setFocusedImageUri(uri)} />
+                )}
               />
+            )}
+
+            {focusedImageUri && (
+              <ImageViewer uri={focusedImageUri} onClose={() => setFocusedImageUri(null)} />
             )}
           </LinearGradient>
         </Modal>

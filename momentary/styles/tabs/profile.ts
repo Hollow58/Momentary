@@ -224,14 +224,6 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  dividerLine: {
-    height: 1,
-    backgroundColor: 'rgba(64,49,43,0.1)',
-    marginHorizontal: 20,
-    marginTop: 22,
-    marginBottom: 22,
-  },
-
   spotifyWrap: {
     marginHorizontal: 16,
     marginTop: 4,
@@ -250,11 +242,6 @@ export const styles = StyleSheet.create({
     elevation: 3,
     borderWidth: 1,
     borderColor: 'rgba(64,49,43,0.06)',
-  },
-  statusCardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
   },
   feelingChip: {
     flexDirection: 'row',
@@ -302,12 +289,6 @@ export const styles = StyleSheet.create({
     color: '#9B8E80',
     fontStyle: 'italic',
   },
-  statusCardHint: {
-    fontFamily: 'Nunito_400Regular',
-    fontSize: 11,
-    color: '#bbb',
-    textAlign: 'right',
-  },
 
   logoutButton: {
     backgroundColor: '#40312B',
@@ -349,47 +330,6 @@ export const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 40,
     fontStyle: 'italic',
-  },
-  diaryList: {
-    paddingHorizontal: 20,
-    paddingBottom: 40,
-    gap: 20,
-  },
-  diaryPolaroid: {
-    backgroundColor: '#F0F0F0',
-    borderRadius: 2,
-    padding: 10,
-    paddingBottom: 32,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 6,
-    elevation: 5,
-  },
-  diaryPolaroidImageBox: {
-    width: '100%',
-    aspectRatio: 1.2,
-    backgroundColor: '#c8c8c8',
-    borderRadius: 1,
-    overflow: 'hidden',
-  },
-  diaryPolaroidImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  diaryPolaroidPlaceholder: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#aaa',
-  },
-  diaryPolaroidCaption: {
-    fontFamily: 'Nunito_400Regular',
-    fontSize: 13,
-    color: '#555',
-    marginTop: 10,
-    textAlign: 'center',
   },
 
   sheetOverlay: {
@@ -529,26 +469,6 @@ export const styles = StyleSheet.create({
     fontFamily: 'Nunito_600SemiBold',
     fontSize: 13,
     color: '#B04A3A',
-  },
-
-  emojiRow: {
-    marginTop: 4,
-    marginBottom: 4,
-  },
-  emojiBtn: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 8,
-    backgroundColor: 'rgba(64,49,43,0.06)',
-  },
-  emojiBtnActive: {
-    backgroundColor: 'rgba(64,49,43,0.20)',
-  },
-  emojiText: {
-    fontSize: 22,
   },
 
   spotifyConnectButton: {
