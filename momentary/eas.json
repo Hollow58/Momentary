@@ -6,31 +6,16 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal",
-      "env": {
-        "EXPO_PUBLIC_API_BASE": "@EXPO_PUBLIC_API_BASE",
-        "EXPO_PUBLIC_SPOTIFY_BASE": "@EXPO_PUBLIC_SPOTIFY_BASE",
-        "EXPO_PUBLIC_PC_IP": "@EXPO_PUBLIC_PC_IP"
-      }
+      "distribution": "internal"
     },
     "preview": {
       "distribution": "internal",
       "android": {
         "buildType": "apk"
-      },
-      "env": {
-        "EXPO_PUBLIC_API_BASE": "@EXPO_PUBLIC_API_BASE",
-        "EXPO_PUBLIC_SPOTIFY_BASE": "@EXPO_PUBLIC_SPOTIFY_BASE",
-        "EXPO_PUBLIC_PC_IP": "@EXPO_PUBLIC_PC_IP"
       }
     },
     "production": {
-      "autoIncrement": true,
-      "env": {
-        "EXPO_PUBLIC_API_BASE": "@EXPO_PUBLIC_API_BASE",
-        "EXPO_PUBLIC_SPOTIFY_BASE": "@EXPO_PUBLIC_SPOTIFY_BASE",
-        "EXPO_PUBLIC_PC_IP": "@EXPO_PUBLIC_PC_IP"
-      }
+      "autoIncrement": true
     }
   },
   "submit": {
